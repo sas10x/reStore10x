@@ -1,8 +1,14 @@
-using API.Dtos;
+
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
+using Core.Helpers;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Core.Dtos;
+using API.Extensions;
+
 
 namespace API.Controllers
 {
@@ -20,7 +26,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts() 
+        public async Task<ActionResult<List<ProductReturnDto>>> GetProducts() 
         {
             var products = await _productRepository.GetProductsAsync();
 
@@ -49,6 +55,15 @@ namespace API.Controllers
             var product = await _productRepository.AddProductsAsync(productToAdd);
 
             return Ok(product);
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<PagedList<ProductReturnDto>>> GetAllProducts([FromQuery] ProductParams productParams) 
+        {
+            var products = await _productRepository.GetAllProductsAsync(productParams);
+
+            Response.AddPaginationHeader(products.MetaData);    
+            return Ok(products);
         }
     }
 }
