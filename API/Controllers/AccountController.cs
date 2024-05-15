@@ -54,7 +54,7 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = _tokenService.CreateTokenv1(user),
                 DisplayName = user.DisplayName
             };
         }
@@ -108,6 +108,19 @@ namespace API.Controllers
             if (result.Succeeded) return Ok(_mapper.Map<AddressDto>(user.Address));
 
             return BadRequest("Problem updating the user");
+        }
+
+        [Authorize]
+        [HttpGet("authcheck")]
+        public async Task<ActionResult<string>> AuthCheck()
+        {
+            return "secret 1";
+        }
+
+        [HttpGet("noauthcheck")]
+        public async Task<ActionResult<string>> NoAuthCheck()
+        {
+            return "secret 2";
         }
     }
 }
